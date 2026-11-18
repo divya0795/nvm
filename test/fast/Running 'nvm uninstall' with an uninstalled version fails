@@ -1,0 +1,21 @@
+#!/bin/sh
+
+cleanup() {
+  rmdir "${NVM_DIR}/v0.0.1" 2>/dev/null
+}
+die () { echo "$@" ; cleanup ; exit 1; }
+
+: nvm.sh
+\. ../../nvm.sh
+\. ../common.sh
+
+try_err nvm uninstall 22
+[ "${CAPTURED_STDERR}" = "Version '22' is not installed." ] || die "unexpected error message: >${CAPTURED_STDERR}<"
+[ "${CAPTURED_EXIT_CODE}" = 1 ] || die "\`nvm uninstall 22\` with nothing installed should exit 1; got ${CAPTURED_EXIT_CODE}"
+
+mkdir -p "${NVM_DIR}/v0.0.1"
+try_err nvm uninstall 0.0
+[ "${CAPTURED_STDERR}" = "Version 'v0.0.1' (inferred from 0.0) is not installed." ] || die "unexpected error message: >${CAPTURED_STDERR}<"
+[ "${CAPTURED_EXIT_CODE}" = 1 ] || die "\`nvm uninstall 0.0\` with v0.0.1 not installed should exit 1; got ${CAPTURED_EXIT_CODE}"
+
+cleanup

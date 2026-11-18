@@ -5815,7 +5815,7 @@ nvm() {
         else
           nvm_err "Version '${REQUESTED_VERSION}' is not installed."
         fi
-        return
+        return 1
       fi
 
       local SLUG_BINARY
@@ -6693,7 +6693,7 @@ nvm() {
         esac
 
         nvm_err "Alias ${1-} doesn't exist!"
-        return
+        return 1
       fi
 
       local NVM_ALIAS_ORIGINAL

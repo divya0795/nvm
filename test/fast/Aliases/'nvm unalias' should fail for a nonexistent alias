@@ -1,0 +1,18 @@
+#!/bin/sh
+
+: nvm.sh
+\. ../../../nvm.sh
+\. ../../common.sh
+
+die () { echo "$@" ; exit 1; }
+
+[ ! -e "$(nvm_alias_path)/nonexistent" ] || die 'the alias "nonexistent" should not exist'
+
+try_err nvm unalias nonexistent
+[ "${CAPTURED_STDERR}" = "Alias nonexistent doesn't exist!" ] || die "unexpected error message: >${CAPTURED_STDERR}<"
+[ "${CAPTURED_EXIT_CODE}" = 1 ] || die "\`nvm unalias nonexistent\` should exit 1; got ${CAPTURED_EXIT_CODE}"
+
+# `nvm alias <name> ''` deletes the alias the same way
+try_err nvm alias nonexistent ''
+[ "${CAPTURED_STDERR}" = "Alias nonexistent doesn't exist!" ] || die "unexpected error message: >${CAPTURED_STDERR}<"
+[ "${CAPTURED_EXIT_CODE}" = 1 ] || die "\`nvm alias nonexistent ''\` should exit 1; got ${CAPTURED_EXIT_CODE}"
